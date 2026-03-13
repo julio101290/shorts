@@ -1,108 +1,363 @@
-# Auto Uploader de Shorts a YouTube
+# 🎬 Auto Uploader de YouTube Shorts con IA (Ollama)
 
-Este script automatiza la subida de videos cortos (Shorts) a YouTube. Utiliza Ollama local (modelo qwen2.5:14b) para generar títulos, descripciones y hashtags de forma automática, y luego sube el video a YouTube mediante la API oficial.
+Script en **Python** que automatiza completamente la subida de **YouTube
+Shorts**.
 
-Ideal para creadores de contenido que manejan muchos videos y quieren agilizar el proceso de publicación.
+El sistema:
 
----------------------------------------------------------------------
+1.  Detecta videos nuevos en una carpeta.
+2.  Usa **IA local con Ollama** para generar:
+    -   Título
+    -   Descripción
+    -   Hashtags
+3.  Sube automáticamente el video a **YouTube**.
+4.  Mueve el archivo a la carpeta de **subidos**.
+5.  Espera un tiempo aleatorio antes de subir el siguiente video.
 
-CARACTERISTICAS:
+Todo funciona **de forma local sin depender de APIs externas de IA**.
 
-- Detección automática de videos en una carpeta inbox.
-- Generación de metadatos (título, descripción, hashtags) usando Ollama.
-- Subida a YouTube con autenticación OAuth (token persistente).
-- Espera aleatoria entre 3 y 15 minutos entre subidas.
-- Manejo de errores y archivos no válidos.
-- Organización automática: videos subidos se mueven a carpeta uploaded.
+------------------------------------------------------------------------
 
----------------------------------------------------------------------
+# 🚀 Características
 
-REQUISITOS:
+✔ Generación automática de metadata con **IA local**\
+✔ Subida automática a **YouTube Shorts**\
+✔ Espera aleatoria entre subidas\
+✔ Manejo automático de tokens de YouTube\
+✔ Sistema simple basado en carpetas\
+✔ No requiere servicios en la nube para la IA\
+✔ Funciona en **Linux, Mac y Windows (WSL)**
 
-1. Software necesario:
-   - Python 3.8 o superior
-   - Ollama instalado (ollama.ai)
-   - Modelo qwen2.5:14b descargado en Ollama
-   - Conexión a internet
+------------------------------------------------------------------------
 
-2. Dependencias de Python:
-   pip install google-api-python-client google-auth-oauthlib
+# 📂 Estructura de Carpetas
 
-3. Credenciales de Google (YouTube API):
-   - Ir a Google Cloud Console
-   - Crear proyecto y habilitar YouTube Data API v3
-   - Configurar pantalla de consentimiento
-   - Crear credencial OAuth 2.0 para aplicación de escritorio
-   - Descargar JSON y renombrar a client_secrets.json
+El script utiliza la siguiente estructura:
 
----------------------------------------------------------------------
+    ~/shorts/
 
-ESTRUCTURA DE DIRECTORIOS:
+    global/
+       inbox/
+          video1.mp4
+          video2.mp4
 
-~/shorts/
-├── global/
-│   ├── inbox/       # Coloca aquí los videos a subir
-│   └── uploaded/    # Videos subidos se mueven aquí
+       uploaded/
+          video1.mp4
+          video2.mp4
 
-Nota: En Windows usar C:\shorts\global\inbox
+### 📥 inbox
 
----------------------------------------------------------------------
+Aquí se colocan los videos que se quieren subir.
 
-MODO DE USO:
+### 📤 uploaded
 
-1. Colocar videos en inbox/
-2. Ejecutar: python auto_uploader.py
-3. Autorizar YouTube (solo primera vez)
-4. El proceso automático comienza:
-   - Genera metadata con Ollama
-   - Sube a YouTube (público, categoría Música)
-   - Mueve video a uploaded/
-   - Espera 3-15 minutos antes del siguiente
+Los videos que ya fueron subidos se moverán automáticamente aquí.
 
----------------------------------------------------------------------
+------------------------------------------------------------------------
 
-PERSONALIZACION:
+# ⚙️ Requisitos
 
-- Cambiar modelo Ollama: editar OLLAMA_MODEL
-- Tiempos de espera: modificar random.randint() en el código
-- Categoría YouTube: cambiar categoryId (actualmente 10=Música)
-- Prompt de metadata: editar generate_metadata()
+## Python
 
----------------------------------------------------------------------
+Python **3.9 o superior**
 
-SOLUCION DE PROBLEMAS:
+Instalar dependencias:
 
-Error client_secrets.json no encontrado:
-  - Colocar el archivo en la misma carpeta del script
+``` bash
+pip install google-api-python-client google-auth-oauthlib google-auth-httplib2
+```
 
-Error Ollama o JSON inválido:
-  - Verificar que ollama serve esté corriendo
-  - Confirmar modelo descargado: ollama pull qwen2.5:14b
+------------------------------------------------------------------------
 
-Error subida YouTube:
-  - Borrar token.json y re-autorizar
-  - Verificar cuota de API
-  - Video debe ser ≤ 60 segundos (Shorts)
+## Ollama (IA local)
 
-Videos no detectados:
-  - Extensiones soportadas: .mp4, .mov, .mkv
+Instalar Ollama:
 
----------------------------------------------------------------------
+https://ollama.com
 
-NOTAS ADICIONALES:
+Descargar el modelo usado por el script:
 
-- No se borran videos, solo se mueven a uploaded/
-- Si falla subida, video queda en inbox para reintentar
-- token.json guarda credenciales de YouTube
+``` bash
+ollama pull qwen2.5:14b
+```
 
----------------------------------------------------------------------
+Modelo usado:
 
-CONTRIBUCIONES Y LICENCIA:
+    qwen2.5:14b
 
-Contribuciones bienvenidas via issues o pull requests.
-Licencia MIT.
+Este modelo genera:
 
----------------------------------------------------------------------
+-   títulos optimizados
+-   descripciones
+-   hashtags
 
-¡Ahora puedes automatizar la publicación de tus Shorts!
-END_README_COPY_HERE
+sin necesidad de internet.
+
+------------------------------------------------------------------------
+
+## Credenciales de YouTube
+
+Debes crear credenciales OAuth en Google Cloud.
+
+1️⃣ Ir a:
+
+https://console.cloud.google.com/
+
+2️⃣ Crear un proyecto
+
+3️⃣ Activar la API:
+
+    YouTube Data API v3
+
+4️⃣ Crear credenciales:
+
+    OAuth Client ID
+
+Tipo:
+
+    Desktop Application
+
+5️⃣ Descargar el archivo:
+
+    client_secrets.json
+
+Colócalo en la misma carpeta que el script.
+
+------------------------------------------------------------------------
+
+# 📦 Instalación
+
+### 1️⃣ Guardar el script
+
+    uploader.py
+
+------------------------------------------------------------------------
+
+### 2️⃣ Crear carpetas
+
+``` bash
+mkdir -p ~/shorts/global/inbox
+mkdir -p ~/shorts/global/uploaded
+```
+
+------------------------------------------------------------------------
+
+### 3️⃣ Instalar dependencias
+
+``` bash
+pip install google-api-python-client google-auth-oauthlib
+```
+
+------------------------------------------------------------------------
+
+### 4️⃣ Instalar modelo de IA
+
+``` bash
+ollama pull qwen2.5:14b
+```
+
+------------------------------------------------------------------------
+
+# ▶️ Uso
+
+### 1️⃣ Colocar videos en:
+
+    ~/shorts/global/inbox
+
+Ejemplo:
+
+    drum_fill_01.mp4
+    drum_solo_fast.mp4
+
+------------------------------------------------------------------------
+
+### 2️⃣ Ejecutar el script
+
+``` bash
+python3 uploader.py
+```
+
+------------------------------------------------------------------------
+
+### 3️⃣ Primer inicio
+
+Se abrirá una ventana de login de Google.
+
+Después de iniciar sesión se generará:
+
+    token.json
+
+Ese archivo permitirá subir videos **sin volver a iniciar sesión**.
+
+------------------------------------------------------------------------
+
+# 🧠 Cómo funciona
+
+Flujo del script:
+
+    Video nuevo
+          │
+          ▼
+    IA genera metadata
+          │
+          ▼
+    Subida a YouTube
+          │
+          ▼
+    Mover a carpeta uploaded
+          │
+          ▼
+    Esperar tiempo aleatorio
+
+------------------------------------------------------------------------
+
+# ⏱ Sistema Anti-Spam
+
+El script espera un tiempo aleatorio entre videos:
+
+    200 a 900 segundos
+
+Esto equivale aproximadamente a:
+
+    3 a 15 minutos
+
+Esto ayuda a evitar comportamientos detectables como automatización
+masiva.
+
+------------------------------------------------------------------------
+
+# 🧠 Generación de Metadata con IA
+
+El script usa **Ollama local** para generar contenido optimizado para
+Shorts.
+
+Ejemplo de salida:
+
+``` json
+{
+  "title": "Fill de batería rápido 🔥",
+  "description": "Un fill explosivo en batería.\n¿Puedes tocarlo?",
+  "hashtags": ["#bateria", "#drums", "#drummer", "#shorts", "#musica"]
+}
+```
+
+------------------------------------------------------------------------
+
+# 🎯 Por qué usar este sistema
+
+## 1️⃣ Automatización total
+
+Puedes subir **decenas o cientos de Shorts automáticamente**.
+
+------------------------------------------------------------------------
+
+## 2️⃣ IA local
+
+No dependes de:
+
+-   OpenAI
+-   APIs pagadas
+-   límites de uso
+
+Todo corre en tu computadora.
+
+------------------------------------------------------------------------
+
+## 3️⃣ Ideal para contenido masivo
+
+Perfecto para:
+
+-   músicos
+-   creadores de contenido
+-   clips de gaming
+-   podcasts
+-   contenido educativo
+
+------------------------------------------------------------------------
+
+## 4️⃣ Ahorra tiempo
+
+Subir manualmente muchos videos puede tomar horas.
+
+Este sistema puede hacerlo automáticamente.
+
+------------------------------------------------------------------------
+
+## 5️⃣ Escalable
+
+Puedes expandirlo para:
+
+-   TikTok
+-   Instagram Reels
+-   Facebook Reels
+-   múltiples cuentas
+
+------------------------------------------------------------------------
+
+# 🔧 Configuración del Script
+
+Variables principales:
+
+``` python
+BASE_DIR = "~/shorts"
+
+OLLAMA_MODEL = "qwen2.5:14b"
+
+VIDEO_EXTS = (".mp4", ".mov", ".mkv")
+```
+
+------------------------------------------------------------------------
+
+# 📊 Logs del Sistema
+
+El script imprime logs como:
+
+    [2026-03-10 12:22:01] Procesando: drum_fill.mp4
+    [2026-03-10 12:22:04] Metadata generada
+    [2026-03-10 12:22:12] YouTube OK → videoId=abc123
+    [2026-03-10 12:22:12] Video movido a uploaded
+    [2026-03-10 12:22:12] Esperando 10 minutos...
+
+------------------------------------------------------------------------
+
+# ⚠️ Posibles Errores
+
+### Ollama no instalado
+
+    Ollama error
+
+Solución:
+
+    ollama install
+
+------------------------------------------------------------------------
+
+### client_secrets.json no encontrado
+
+    YouTube error: client_secrets.json no encontrado
+
+Debes descargar las credenciales de Google Cloud.
+
+------------------------------------------------------------------------
+
+# 🔒 Seguridad
+
+El sistema guarda un archivo:
+
+    token.json
+
+Este archivo contiene el acceso a tu cuenta de YouTube.
+
+**No lo compartas.**
+
+------------------------------------------------------------------------
+
+# 🧩 Posibles mejoras
+
+Puedes expandir el sistema para:
+
+-   subir a **TikTok automáticamente**
+-   generar **miniaturas**
+-   generar **títulos A/B**
+-   programar horarios de publicación
+-   subir a **múltiples canales**
